@@ -15,6 +15,10 @@ from barcode.writer import ImageWriter
 
 app = FastAPI(title="Barcode Generator API", version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 
 FORMATS = {"code128": barcode.Code128, "ean13": barcode.EAN13, "ean8": barcode.EAN8}
 
