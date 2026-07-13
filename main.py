@@ -20,11 +20,9 @@ async def health():
 
 FORMATS = {"code128": barcode.Code128, "ean13": barcode.EAN13, "ean8": barcode.EAN8}
 
-
 @app.get("/")
 async def root():
     return {"service": "Barcode Generator API", "version": "1.1.0"}
-
 
 @app.get("/generate")
 async def generate(
