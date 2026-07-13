@@ -13,8 +13,6 @@ from pydantic import BaseModel
 import barcode
 from barcode.writer import ImageWriter
 
-app = FastAPI(title="Barcode Generator API", version="1.0.0", dependencies=[Depends(_rate_limit)])
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 import time as _t, threading as _th
 _rl_win, _rl_max, _rl_hits, _rl_lk = 60, 60, {}, _th.Lock()
 
@@ -32,6 +30,9 @@ async def _rate_limit(request):
         else: _rl_hits[ip] = {'s': now, 'c': 1}
     return True
 
+app = FastAPI(title="Barcode Generator API", version="1.0.0", dependencies=[Depends(_rate_limit)])
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
 @app.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok"}
@@ -40,19 +41,6 @@ async def health():
 FORMATS = {"code128": barcode.Code128, "ean13": barcode.EAN13, "ean8": barcode.EAN8}
 
 
-@app.api_route("/health", methods=["GET", "HEAD"])
-async def health(): return {"status": "ok"}
-
-
-@app.get("/")
-async def root(): return {"service": "Barcode Generator API", "version": "1.0.0"}
-
-
-@app.get("/generate")
-async def generate(
-    data: str = Query(..., description="Barcode content (numbers for EAN)"),
-    fmt: str = Query("code128", description="Format: code128, ean13, ean8"),
-    output: str = Query("png", description="Output: png or base64"),
 ):
     if fmt not in FORMATS:
         fmt = "code128"
