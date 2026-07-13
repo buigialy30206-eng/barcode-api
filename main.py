@@ -22,7 +22,7 @@ FORMATS = {"code128": barcode.Code128, "ean13": barcode.EAN13, "ean8": barcode.E
 
 @app.get("/")
 async def root():
-    return {"service": "Barcode Generator API", "version": "1.1.0"}
+    return {"service": "Barcode Generator API", "version": "1.1.0", "related": ["QR Code Generator API"]}
 
 @app.get("/generate")
 async def generate(
